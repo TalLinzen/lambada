@@ -141,7 +141,7 @@ function RNNOption:__init()
                     if x == '' then return os.getenv('USER') else return x end
                 end)
     self:option('-save',
-                'trainer.save', false,
+                'trainer.save', true,
                 'Whether to save the trained model or not')
     self:option('-load',
                 'trainer.load', '',
