@@ -42,7 +42,6 @@ function TextSource:__init(config)
     self.valid_txt = paths.concat(self.root, "valid.txt")
     self.test_txt = paths.concat(self.root, "test.txt")
     self.vocab_file = paths.concat(self.root, "vocab.txt")
-    self.accuracy_valid_txt = paths.concat(self.root, "lambada.txt")
     self.files = {self.train_txt, self.valid_txt, self.test_txt}
     local output_tensors = {}
 
@@ -52,14 +51,11 @@ function TextSource:__init(config)
 
     local tensor_file = paths.concat(self.root, "tensors.t7")
     local dict_file = paths.concat(self.root, "dict.t7")
-    local lambada_valid_file = paths.concat(self.root, "lambada.t7")
 
     if ( not path.exists(tensor_file) ) or ( not path.exists(dict_file) ) or clean then
         print("Generating tensor files...")
         self:_build_data(config, dict_file, tensor_file)
     end
-
-
 
     -- get the training, validation and test tensors
     self.sets = {}
@@ -72,18 +68,6 @@ function TextSource:__init(config)
     self.sets['test'] = all_data[3]
     print("Data loaded successfully")
     print("Vocab size: " .. #self.dict.index_to_symbol)
-
-    if path.exists(self.accuracy_valid_txt) then
-        if not path.exists(lambada_valid_file) then
-            print("Making a list of lambada tensors...")
-            local lambada_tensors = preprocessor.text_to_lambada_tensor(self.dict, self.accuracy_valid_txt, config)
-            torch.save(lambada_valid_file, lambada_tensors)
-        end
-
-
-        self.lambada_tensors = torch.load(lambada_valid_file)
-
-    end
 
     collectgarbage()
 end
