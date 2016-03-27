@@ -145,7 +145,7 @@ end
 
 function HLogSoftMax:updateOutput(input, target)
     local batch_size = input:size(1)
-    if torch.type(target) ~= 'torch.CudaTensor' then
+    if torch.type(target) == 'torch.CudaTensor' then
         target = target:long()
     end
     local new_target = self.mapping:index(1, target)
@@ -174,7 +174,7 @@ function HLogSoftMax:updateGradInput(input, target)
     self.gradInput:resizeAs(input)
 
     -- Avoid CPU error
-    if torch.type(target) ~= 'torch.CudaTensor' then
+    if torch.type(target) == 'torch.CudaTensor' then
         target = target:long()
     end
 
